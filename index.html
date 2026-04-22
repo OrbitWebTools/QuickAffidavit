@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickAffidavit | Free Gap Certificate Generator</title>
+    <meta name="description" content="Generate Notary-ready Gap Certificates for college admission in 2 minutes. Free E-Stamp formatting.">
+    <style>
+        :root {
+            --primary: #0866ff;
+            --bg: #f0f2f5;
+            --paper: #ffffff;
+            --text: #1c1e21;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* Navbar */
+        header { background: white; padding: 15px 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--primary); letter-spacing: -1px; }
+        .logo span { color: #333; }
+
+        /* Main Layout */
+        .container { display: flex; flex-wrap: wrap; padding: 20px 5%; gap: 30px; flex: 1; }
+        .editor-panel { flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: fit-content;}
+        .preview-panel { flex: 1.5; min-width: 400px; display: flex; flex-direction: column; align-items: center;}
+        
+        h2 { font-size: 20px; margin-bottom: 20px; color: #333; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px;}
+        
+        /* Form Elements */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #555; }
+        input[type="text"], input[type="date"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; transition: 0.3s;}
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(8, 102, 255, 0.1); }
+        
+        .row { display: flex; gap: 15px; }
+        .row .form-group { flex: 1; }
+
+        /* Pro Mode & Switches */
+        .pro-mode-box { background: #eef5ff; border: 1px solid #b6d4fe; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .pro-mode-box h4 { color: #084298; display: flex; justify-content: space-between; align-items: center;}
+        .pro-mode-box p { font-size: 12px; color: #555; margin-top: 5px; margin-bottom: 10px;}
+        .toggle-btn { background: #0866ff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
+        
+        .switch-container { display: flex; align-items: center; justify-content: space-between; background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffecb5; margin-bottom: 20px; font-weight: bold; color: #664d03;}
+        .checkbox-wrapper { display: flex; align-items: center; gap: 10px; cursor: pointer;}
+        input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
+
+        /* Print Button */
+        .print-btn { width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);}
+        .print-btn:hover { background: #218838; transform: translateY(-2px); }
+
+        /* Paper Preview */
+        .paper-container { background: white; width: 100%; max-width: 210mm; min-height: 297mm; padding: 25mm 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 2px; position: relative; overflow: hidden; margin-bottom: 30px;}
+        
+        /* The Stamp Placeholder */
+        .stamp-margin-indicator { display: none; height: 90mm; background: repeating-linear-gradient(45deg, #f8f9fa, #f8f9fa 10px, #ffffff 10px, #ffffff 20px); border: 2px dashed #ccc; margin-bottom: 20px; align-items: center; justify-content: center; color: #aaa; font-weight: bold; font-size: 18px; text-align: center;}
+        
+        /* Legal Text Styling */
+        .legal-text { font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.8; text-align: justify; color: #000; }
+        .legal-text h1 { text-align: center; font-size: 22px; text-decoration: underline; margin-bottom: 20px; text-transform: uppercase; }
+        .fillable { font-weight: bold; border-bottom: 1px dotted #000; padding: 0 5px; color: #0866ff; }
+        .para { text-indent: 50px; margin-bottom: 15px; }
+
+        /* --- PRINT CSS MAGIC --- */
+        @media print {
+            body * { visibility: hidden; } /* Hide everything */
+            .paper-container, .paper-container * { visibility: visible; } /* Show only paper */
+            .paper-container { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 20mm; }
+            .fillable { color: #000; border-bottom: none; } /* Remove blue color for printing */
+            
+            /* Hide browser URLs and page numbers */
+            @page { margin: 0; } 
+            
+            /* E-Stamp Mode Print Formatting */
+            .e-stamp-active { padding-top: 100mm; } /* Leaves exactly ~3.5 inches at top for Stamp */
+            .stamp-margin-indicator { display: none !important; } /* Never print the placeholder */
+        }
+
+        @media(max-width: 768px){ .container { flex-direction: column; } .preview-panel { min-width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Quick<span>Affidavit</span></div>
+        <div style="font-size: 14px; font-weight: 600; color: #555;">100% Free Format</div>
+    </header>
+
+    <div class="container">
+        <div class="editor-panel">
+            
+            <div class="pro-mode-box" id="proModeBox">
+                <h4>🏪 Cyber Cafe Pro Mode <button class="toggle-btn" onclick="saveAgentDetails()">Save Details</button></h4>
+                <p>Save your shop details once. Auto-fill for every customer!</p>
+                <div class="row">
+                    <div class="form-group"><input type="text" id="agentName" placeholder="Notary/Agent Name (e.g. Sharma CSC)"></div>
+                    <div class="form-group"><input type="text" id="agentPlace" placeholder="City/District"></div>
+                </div>
+                <div id="proMsg" style="color: green; font-size: 12px; font-weight: bold; display: none;">✅ Details Saved Locally!</div>
+            </div>
+
+            <div class="switch-container">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" id="estampToggle">
+                    Print on E-Stamp Paper? (Leaves top margin)
+                </label>
+            </div>
+
+            <h2>Student Details</h2>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter full name" oninput="updatePreview('fullName', 'prevName')">
+            </div>
+            <div class="form-group">
+                <label>Father's Name</label>
+                <input type="text" id="fatherName" placeholder="Enter father's name" oninput="updatePreview('fatherName', 'prevFName')">
+            </div>
+            
+            <div class="row">
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob" onchange="calculateAge()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Full Address</label>
+                <input type="text" id="address" placeholder="House No, Street, Village/City" oninput="updatePreview('address', 'prevAddress')">
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Gap Start Year</label>
+                    <input type="text" id="gapStart" placeholder="e.g. 2023" oninput="updatePreview('gapStart', 'prevStart')">
+                </div>
+                <div class="form-group">
+                    <label>Gap End Year</label>
+                    <input type="text" id="gapEnd" placeholder="e.g. 2024" oninput="updatePreview('gapEnd', 'prevEnd')">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Reason for Gap (Smart Dropdown)</label>
+                <select id="reason" onchange="updatePreview('reason', 'prevReason')">
+                    <option value="">-- Select Valid Legal Reason --</option>
+                    <option value="Preparation for Competitive Exams (NEET/JEE/UPSC)">Preparation for Competitive Exams (NEET/JEE/UPSC)</option>
+                    <option value="Health/Medical issues requiring complete rest">Health/Medical issues requiring complete rest</option>
+                    <option value="Financial constraints and personal family reasons">Financial constraints and family reasons</option>
+                    <option value="Self-study and upskilling for better opportunities">Self-study and upskilling</option>
+                </select>
+            </div>
+
+            <button class="print-btn" onclick="window.print()">🖨️ Print Certificate / Save PDF</button>
+            <p style="text-align: center; font-size: 12px; color: gray; margin-top: 15px;">Do not sign at home. Sign in front of the Notary Public.</p>
+        </div>
+
+        <div class="preview-panel">
+            <h3 style="margin-bottom: 10px; color: #555;">📄 Live Preview</h3>
+            
+            <div class="paper-container" id="paper">
+                <div class="stamp-margin-indicator" id="stampPlaceholder">
+                    [ SPACE RESERVED FOR E-STAMP ]<br><span style="font-size:12px; font-weight:normal;">(This box will not print. 3.5 inch margin applied.)</span>
+                </div>
+
+                <div class="legal-text">
+                    <h1>AFFIDAVIT (GAP CERTIFICATE)</h1>
+                    
+                    <p class="para">I, <span class="fillable" id="prevName">____________________</span>, Son/Daughter of <span class="fillable" id="prevFName">____________________</span>, aged about <span class="fillable" id="prevAge">__</span> years, resident of <span class="fillable" id="prevAddress">________________________________________</span>, do hereby solemnly affirm and state on oath as under:</p>
+                    
+                    <p class="para">1. That I am a citizen of India and a resident of the above-mentioned address.</p>
+                    
+                    <p class="para">2. That I have passed my last examination / degree in the year <span class="fillable" id="prevStart">____</span>.</p>
+                    
+                    <p class="para">3. That after passing the aforesaid examination, I did not join any regular college/institution and my academic gap period is from <span class="fillable" id="prevStart">____</span> to <span class="fillable" id="prevEnd">____</span>.</p>
+                    
+                    <p class="para">4. That the reason for this academic gap is: <span class="fillable" id="prevReason">____________________________________________________________</span>.</p>
+                    
+                    <p class="para">5. That during this gap period, I was neither involved in any illegal/criminal activity nor was any criminal case pending against me in any court of law.</p>
+                    
+                    <p class="para">6. That whatever is stated above is true and correct to the best of my knowledge and belief, and no part of it is false.</p>
+
+                    <br><br>
+                    <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+                        <div>
+                            <b>Place:</b> <span class="fillable" id="prevCity">__________</span><br>
+                            <b>Date:</b> <span class="fillable" id="prevDate">__________</span>
+                        </div>
+                        <div style="text-align: center;">
+                            _______________________<br>
+                            <b>DEPONENT</b><br>
+                            (Signature)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LIVE PREVIEW SYNC ---
+        function updatePreview(inputId, spanId) {
+            let val = document.getElementById(inputId).value;
+            document.getElementById(spanId).innerText = val ? val : "____________________";
+        }
+
+        // --- DOB TO AGE CALCULATION ---
+        function calculateAge() {
+            const dobInput = document.getElementById('dob').value;
+            if(!dobInput) return;
+            const dob = new Date(dobInput);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) { age--; }
+            document.getElementById('prevAge').innerText = age;
+        }
+
+        // --- AUTO-SET TODAY'S DATE ---
+        window.onload = function() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            document.getElementById('prevDate').innerText = dd + '/' + mm + '/' + yyyy;
+
+            // Load Cyber Cafe Pro Details if exist
+            if(localStorage.getItem("qa_agentCity")) {
+                document.getElementById("agentPlace").value = localStorage.getItem("qa_agentCity");
+                document.getElementById("agentName").value = localStorage.getItem("qa_agentName");
+                document.getElementById("prevCity").innerText = localStorage.getItem("qa_agentCity");
+                document.getElementById("proMsg").style.display = "block";
+                document.getElementById("proMsg").innerText = "✨ Pro Mode Active: Loaded from history.";
+            }
+        }
+
+        // --- CYBER CAFE PRO MODE (LOCAL STORAGE) ---
+        function saveAgentDetails() {
+            const city = document.getElementById("agentPlace").value;
+            const name = document.getElementById("agentName").value;
+            if(city) {
+                localStorage.setItem("qa_agentCity", city);
+                localStorage.setItem("qa_agentName", name);
+                document.getElementById("prevCity").innerText = city;
+                document.getElementById("proMsg").style.display = "block";
+                document.getElementById("proMsg").innerText = "✅ Details Saved! It will auto-fill next time.";
+            }
+        }
+
+        // --- E-STAMP TOGGLE MAGIC ---
+        document.getElementById('estampToggle').addEventListener('change', function() {
+            const paper = document.getElementById('paper');
+            const placeholder = document.getElementById('stampPlaceholder');
+            if(this.checked) {
+                paper.classList.add('e-stamp-active');
+                placeholder.style.display = 'flex';
+            } else {
+                paper.classList.remove('e-stamp-active');
+                placeholder.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
