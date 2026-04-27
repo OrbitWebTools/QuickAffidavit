@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>QuickAffidavit | Free Gap Certificate Generator format</title>
+    <title>QuickAffidavit | Free Gap Certificate Generator Format</title>
     <meta name="title" content="QuickAffidavit | Free Gap Certificate Generator format">
     <meta name="description" content="Generate Notary-ready Gap Certificates for college admission in 2 minutes. Free E-Stamp formatting, auto age calculator, and PDF download.">
     <meta name="keywords" content="gap certificate maker, affidavit format for college, e-stamp gap certificate, free gap affidavit generator, student gap certificate format">
+
+    <link rel="canonical" href="https://orbitwebtools.github.io/QuickAffidavit/" />
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://orbitwebtools.github.io/QuickAffidavit/">
@@ -16,6 +18,46 @@
     <meta property="og:image" content="https://orbitwebtools.github.io/QuickAffidavit/banner.jpg">
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "QuickAffidavit Gap Certificate Generator",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Web Browser",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "On which stamp paper should I print this Gap Affidavit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can print this downloaded PDF on a ₹50 or ₹100 Non-Judicial E-Stamp paper. Make sure to check the 'Print on E-Stamp Paper' box before printing."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Do I need to get it signed by a Notary?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! After printing the document, you must sign it in front of a registered Notary Public or Oath Commissioner and get their official seal/stamp."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Is this format valid for all Indian Universities?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, this is the standard legal format accepted by major state and central universities across India for UG and PG admissions."
+            }
+          }]
+        }
+      ]
+    }
+    </script>
 
     <style>
         :root {
@@ -73,20 +115,22 @@
         .legal-text h1 { text-align: center; font-size: 22px; text-decoration: underline; margin-bottom: 20px; text-transform: uppercase; }
         .fillable { font-weight: bold; border-bottom: 1px dotted #000; padding: 0 5px; color: #0866ff; }
         .para { text-indent: 50px; margin-bottom: 15px; }
+        
+        .seo-content { width: 100%; max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        /* --- PRINT CSS MAGIC --- */
+        /* --- PRINT CSS MAGIC (Fixed for Cross-Browser Compatibility) --- */
         @media print {
-            body * { visibility: hidden; } /* Hide everything */
-            .paper-container, .paper-container * { visibility: visible; } /* Show only paper */
-            .paper-container { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 20mm; }
-            .fillable { color: #000; border-bottom: none; } /* Remove blue color for printing */
+            body { background: white; margin: 0; padding: 0; }
+            header, .editor-panel, .seo-content, .preview-panel h3 { display: none !important; }
+            .container { padding: 0; display: block; }
+            .preview-panel { width: 100%; min-width: 100%; padding: 0; margin: 0; display: block; }
+            .paper-container { width: 100%; box-shadow: none; padding: 20mm; margin: 0; min-height: auto; }
+            .fillable { color: #000; border-bottom: none; }
             
-            /* Hide browser URLs and page numbers */
             @page { margin: 0; } 
             
-            /* E-Stamp Mode Print Formatting */
-            .e-stamp-active { padding-top: 100mm; } /* Leaves exactly ~3.5 inches at top for Stamp */
-            .stamp-margin-indicator { display: none !important; } /* Never print the placeholder */
+            .e-stamp-active { padding-top: 100mm; } 
+            .stamp-margin-indicator { display: none !important; } 
         }
 
         @media(max-width: 768px){ .container { flex-direction: column; } .preview-panel { min-width: 100%; } }
@@ -209,7 +253,7 @@
         </div>
     </div>
 
-    <div style="width: 100%; max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    <div class="seo-content">
         
         <h2 style="font-size: 22px; color: #0866ff; margin-bottom: 15px;">📝 What is a Gap Certificate for College Admission?</h2>
         <p style="color: #444; line-height: 1.6; margin-bottom: 20px;">
@@ -236,6 +280,7 @@
         <p style="color: #555; font-size: 14px; margin-bottom: 10px;">Yes, this is the standard legal format accepted by major state and central universities across India for undergraduate (UG) and postgraduate (PG) admissions.</p>
 
     </div>
+    
     <script>
         // --- LIVE PREVIEW SYNC ---
         function updatePreview(inputId, spanId) {
@@ -243,7 +288,7 @@
             document.getElementById(spanId).innerText = val ? val : "____________________";
         }
 
-        // --- DOB TO AGE CALCULATION ---
+        // --- DOB TO AGE CALCULATION (Fixed for negative values) ---
         function calculateAge() {
             const dobInput = document.getElementById('dob').value;
             if(!dobInput) return;
@@ -252,6 +297,10 @@
             let age = today.getFullYear() - dob.getFullYear();
             const m = today.getMonth() - dob.getMonth();
             if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) { age--; }
+            
+            // Safeguard against future dates
+            if (age < 0) age = 0; 
+
             document.getElementById('prevAge').innerText = age;
         }
 
